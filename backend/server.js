@@ -18,9 +18,26 @@ connectDB();
 
 app.use(express.json());
 
+// routes
+app.use("/api/auth", authRoutes);
+app.use("/api/users", userRoutes);
+app.use("/api/transactions", transactionRoutes);
+app.use("/api/dashboard", dashboardRoutes);
+
 // Test route
 app.get("/", (req, res) => {
   res.send("API is running...");
+});
+
+// 404 handler
+app.use((req, res) => {
+  res.status(404).json({ message: "Route not found" });
+});
+
+// global error handler
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({ message: "Something went wrong", error: err.message });
 });
 
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

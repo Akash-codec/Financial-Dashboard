@@ -1,75 +1,43 @@
-const mongoose = require('mongoose');
-
-const CATEGORIES = [
-  'salary', 'freelance', 'investment', 'rental',
-  'food', 'transport', 'utilities', 'healthcare',
-  'entertainment', 'education', 'shopping', 'other',
-];
+const mongoose = require("mongoose");
 
 const transactionSchema = new mongoose.Schema(
   {
     amount: {
       type: Number,
-      required: [true, 'Amount is required'],
-      min: [0.01, 'Amount must be greater than 0'],
+      required: [true, "Amount is required"],
     },
     type: {
       type: String,
-      enum: {
-        values: ['income', 'expense'],
-        message: 'Type must be income or expense',
-      },
-      required: [true, 'Type is required'],
+      enum: ["income", "expense"],
+      required: [true, "Type is required"],
     },
     category: {
       type: String,
-      enum: {
-        values: CATEGORIES,
-        message: `Category must be one of: ${CATEGORIES.join(', ')}`,
-      },
-      required: [true, 'Category is required'],
+      required: [true, "Category is required"],
+      trim: true,
     },
     date: {
       type: Date,
-      required: [true, 'Date is required'],
-      default: Date.now,
+      required: [true, "Date is required"],
     },
-    description: {
+    notes: {
       type: String,
       trim: true,
-      maxlength: [500, 'Description cannot exceed 500 characters'],
+      default: "",
     },
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'User',
+      ref: "User",
       required: true,
     },
-    // Soft delete flag
     isDeleted: {
       type: Boolean,
       default: false,
-      select: false,
-    },
-    deletedAt: {
-      type: Date,
-      select: false,
     },
   },
-  { timestamps: true }
+  {
+    timestamps: true,
+  }
 );
 
-// Indexes for commonly filtered fields
-transactionSchema.index({ type: 1, date: -1 });
-transactionSchema.index({ category: 1 });
-transactionSchema.index({ date: -1 });
-transactionSchema.index({ isDeleted: 1 });
-
-// Global filter to exclude soft-deleted records
-transactionSchema.pre(/^find/, function (next) {
-  if (!this.getOptions().includeSoftDeleted) {
-    this.where({ isDeleted: { $ne: true } });
-  }
-  next();
-});
-
-module.exports = mongoose.model('Transaction', transactionSchema);
+module.exports = mongoose.model("Transaction", transactionSchema);
