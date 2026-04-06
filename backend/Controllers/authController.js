@@ -4,13 +4,13 @@ const User = require("../models/user");
 // generate jwt token
 const generateToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
-    expiresIn: process.env.JWT_EXPIRE,
+    expiresIn: process.env.JWT_EXPIRE || '30d',
   });
 };
 
 // POST /api/auth/register
 const register = async (req, res) => {
-  const { name, email, password, role } = req.body;
+  const { name, email, password } = req.body;
 
   if (!name || !email || !password) {
     return res.status(400).json({ message: "Please fill all required fields" });
@@ -23,7 +23,8 @@ const register = async (req, res) => {
       return res.status(400).json({ message: "Email already registered" });
     }
 
-    const user = await User.create({ name, email, password, role });
+    // Force role to 'viewer' so no one can create a backdoor admin account
+    const user = await User.create({ name, email, password, role: 'viewer' });
 
     res.status(201).json({
       message: "User registered successfully",
@@ -31,7 +32,7 @@ const register = async (req, res) => {
         _id: user._id,
         name: user.name,
         email: user.email,
-        role: user.role,
+        role: user.role.charAt(0).toUpperCase() + user.role.slice(1),
       },
       token: generateToken(user._id),
     });
@@ -70,7 +71,7 @@ const login = async (req, res) => {
         _id: user._id,
         name: user.name,
         email: user.email,
-        role: user.role,
+        role: user.role.charAt(0).toUpperCase() + user.role.slice(1),
       },
       token: generateToken(user._id),
     });

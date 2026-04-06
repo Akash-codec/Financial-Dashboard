@@ -5,8 +5,8 @@ const {
   getCategoryTotals,
   getRecentActivity,
   getMonthlyTrends,
-} = require("../controllers/dashboardController");
-const { protect, analystOrAdmin } = require("../middleware/authMiddleware");
+} = require("../Controllers/dashboardController");
+const { protect, analystOrAdmin } = require("../middleware/auth");
 
 // viewers can see summary and recent, analysts/admins can see detailed analytics
 router.get("/summary", protect, getSummary);

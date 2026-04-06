@@ -6,8 +6,8 @@ const {
   createTransaction,
   updateTransaction,
   deleteTransaction,
-} = require("../controllers/transactionController");
-const { protect, adminOnly } = require("../middleware/authMiddleware");
+} = require("../Controllers/transactionController");
+const { protect, adminOnly } = require("../middleware/auth");
 
 // everyone logged in can view
 router.get("/", protect, getTransactions);

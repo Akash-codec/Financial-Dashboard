@@ -5,8 +5,8 @@ const {
   getUserById,
   updateUser,
   deleteUser,
-} = require("../controllers/userController");
-const { protect, adminOnly } = require("../middleware/authMiddleware");
+} = require("../Controllers/userController");
+const { protect, adminOnly } = require("../middleware/auth");
 
 // all user routes require admin
 router.get("/", protect, adminOnly, getAllUsers);

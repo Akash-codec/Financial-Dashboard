@@ -1,0 +1,79 @@
+@import "tailwindcss";
+
+@theme {
+  --color-on-primary: #ffffff;
+  --color-secondary-fixed-dim: #b6cad2;
+  --color-primary-fixed-dim: #b2c5ff;
+  --color-primary-fixed: #dae2ff;
+  --color-surface-dim: #d9d9e4;
+  --color-on-primary-container: #c4d2ff;
+  --color-surface: #faf8ff;
+  --color-outline: #737685;
+  --color-surface-container-highest: #e1e2ec;
+  --color-error: #ba1a1a;
+  --color-error-container: #ffdad6;
+  --color-surface-variant: #e1e2ec;
+  --color-inverse-on-surface: #f0f0fb;
+  --color-on-surface-variant: #434654;
+  --color-on-error-container: #93000a;
+  --color-surface-container-lowest: #ffffff;
+  --color-on-tertiary-fixed-variant: #812800;
+  --color-inverse-primary: #b2c5ff;
+  --color-tertiary: #7b2600;
+  --color-primary: #003d9b;
+  --color-on-secondary-fixed-variant: #374951;
+  --color-on-background: #191b23;
+  --color-on-secondary-container: #55676f;
+  --color-on-secondary-fixed: #0b1e24;
+  --color-on-primary-fixed: #001848;
+  --color-secondary-fixed: #d2e6ef;
+  --color-on-tertiary-fixed: #380d00;
+  --color-on-surface: #191b23;
+  --color-on-tertiary: #ffffff;
+  --color-secondary: #4f6169;
+  --color-surface-tint: #0c56d0;
+  --color-tertiary-fixed: #ffdbcf;
+  --color-secondary-container: #d2e6ef;
+  --color-surface-container: #ededf8;
+  --color-background: #faf8ff;
+  --color-inverse-surface: #2e3038;
+  --color-tertiary-fixed-dim: #ffb59b;
+  --color-tertiary-container: #a33500;
+  --color-on-secondary: #ffffff;
+  --color-on-tertiary-container: #ffc6b2;
+  --color-surface-bright: #faf8ff;
+  --color-on-primary-fixed-variant: #0040a2;
+  --color-surface-container-high: #e7e7f2;
+  --color-primary-container: #0052cc;
+  --color-outline-variant: #c3c6d6;
+  --color-surface-container-low: #f3f3fd;
+  --color-on-error: #ffffff;
+
+  --font-headline: "Manrope", sans-serif;
+  --font-body: "Inter", sans-serif;
+  --font-label: "Inter", sans-serif;
+  --font-manrope: "Manrope", sans-serif;
+  --font-inter: "Inter", sans-serif;
+}
+
+@layer base {
+  body {
+    font-family: var(--font-inter);
+    background-color: var(--color-surface);
+    color: var(--color-on-surface);
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+  .dark {
+    --color-surface: #111318;
+    --color-on-surface: #e1e2ec;
+    --color-surface-container-lowest: #08090b;
+    --color-surface-container-low: #191b23;
+    --color-surface-container-high: #2e3038;
+    --color-outline-variant: #434654;
+    --color-secondary: #b6cad2;
+    --color-primary: #a2baf4;
+  }
+  .material-symbols-outlined {
+    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  }
+}
