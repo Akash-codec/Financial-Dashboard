@@ -7,6 +7,7 @@ import Insights from './Pages/Insights';
 import Login from './Pages/Login';
 import Register from './Pages/Register';
 import AdminPanel from './Pages/AdminPanel';
+import AdminRoute from './Component/AdminRoute';
 import './index.css';
 
 function App() {
@@ -21,7 +22,7 @@ function App() {
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="transactions" element={<Transactions />} />
           <Route path="insights" element={<Insights />} />
-          <Route path="users" element={<AdminPanel />} />
+          <Route path="users" element={<AdminRoute><AdminPanel /></AdminRoute>} />
         </Route>
       </Routes>
     </Router>

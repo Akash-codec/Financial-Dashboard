@@ -7,6 +7,7 @@ const Sidebar = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { user } = useSelector((state) => state.auth);
+  const isAdmin = user?.role?.toLowerCase() === 'admin';
 
   const onLogout = () => {
     dispatch(logout());
@@ -48,7 +49,7 @@ const Sidebar = () => {
           <span className="material-symbols-outlined" data-icon="insights">insights</span>
           <span>Insights</span>
         </NavLink>
-        {user && (user.role === 'Admin' || user.role === 'admin') && (
+        {isAdmin && (
           <NavLink 
             to="/users" 
             className={({ isActive }) => `flex items-center gap-3 px-4 py-3 font-inter text-sm transition-all rounded-xl ${isActive ? 'text-error bg-surface-container-lowest font-semibold shadow-sm translate-x-1 duration-200' : 'text-secondary hover:text-error font-medium'}`}

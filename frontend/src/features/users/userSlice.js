@@ -19,11 +19,11 @@ export const fetchUsers = createAsyncThunk('users/getAll', async (_, thunkAPI) =
   }
 });
 
-export const updateUserRole = createAsyncThunk('users/updateRole', async (userData, thunkAPI) => {
+export const updateUser = createAsyncThunk('users/update', async (userData, thunkAPI) => {
   try {
-    const { id, role } = userData;
+    const { id, ...updates } = userData;
     const token = thunkAPI.getState().auth.user.token;
-    return await userService.updateUserRole(id, role, token);
+    return await userService.updateUser(id, updates, token);
   } catch (error) {
     const message = (error.response?.data?.message) || error.message || error.toString();
     return thunkAPI.rejectWithValue(message);
@@ -51,10 +51,10 @@ export const userSlice = createSlice({
         state.isError = true;
         state.message = action.payload;
       })
-      .addCase(updateUserRole.pending, (state) => {
+      .addCase(updateUser.pending, (state) => {
         state.isLoading = true;
       })
-      .addCase(updateUserRole.fulfilled, (state, action) => {
+      .addCase(updateUser.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isSuccess = true;
         // update the specific user in the list
@@ -64,7 +64,7 @@ export const userSlice = createSlice({
           state.usersList[index] = updatedUser;
         }
       })
-      .addCase(updateUserRole.rejected, (state, action) => {
+      .addCase(updateUser.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
         state.message = action.payload;

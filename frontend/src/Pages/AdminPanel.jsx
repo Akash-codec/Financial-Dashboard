@@ -1,28 +1,48 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { fetchUsers, updateUserRole, resetUsersState } from '../features/users/userSlice';
-import { useNavigate } from 'react-router-dom';
+import { fetchUsers, updateUser, resetUsersState } from '../features/users/userSlice';
+import toast from 'react-hot-toast';
 
 const AdminPanel = () => {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
-  
+
   const { user } = useSelector((state) => state.auth);
   const { usersList, isLoading } = useSelector((state) => state.users);
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [editRole, setEditRole] = useState('viewer');
+  const [editStatus, setEditStatus] = useState(true);
 
   useEffect(() => {
-    // If not admin, redirect
-    if (user && user.role !== 'Admin' && user.role !== 'admin') {
-      navigate('/dashboard');
-    } else {
-      dispatch(fetchUsers());
-    }
-    
+    dispatch(fetchUsers());
     return () => { dispatch(resetUsersState()); };
-  }, [user, navigate, dispatch]);
+  }, [dispatch]);
 
-  const handleRoleChange = (id, newRole) => {
-    dispatch(updateUserRole({ id, role: newRole }));
+  const isSelf = (targetUserId) => user?._id === targetUserId;
+
+  const openEditCard = (targetUser) => {
+    setSelectedUser(targetUser);
+    setEditRole(targetUser.role);
+    setEditStatus(Boolean(targetUser.isActive));
+  };
+
+  const closeEditCard = () => {
+    setSelectedUser(null);
+  };
+
+  const handleSaveChanges = async () => {
+    if (!selectedUser) return;
+
+    try {
+      await dispatch(updateUser({
+        id: selectedUser._id,
+        role: editRole,
+        isActive: editStatus,
+      })).unwrap();
+      toast.success('User updated successfully');
+      closeEditCard();
+    } catch (error) {
+      toast.error(error || 'Failed to update user');
+    }
   };
 
   if (isLoading) {
@@ -59,7 +79,11 @@ const AdminPanel = () => {
             </thead>
             <tbody className="divide-y divide-outline-variant/5">
               {usersList.map((u) => (
-                <tr key={u._id} className="hover:bg-surface-container-low transition-colors group">
+                <tr
+                  key={u._id}
+                  className="hover:bg-surface-container-low transition-colors group cursor-pointer"
+                  onClick={() => openEditCard(u)}
+                >
                   <td className="px-8 py-6">
                     <div className="flex items-center gap-3">
                       <div className="w-8 h-8 rounded-full bg-primary/20 text-primary flex items-center justify-center font-bold">
@@ -72,16 +96,9 @@ const AdminPanel = () => {
                     <span className="text-sm text-secondary font-medium">{u.email}</span>
                   </td>
                   <td className="px-8 py-6">
-                    <select 
-                      value={u.role} 
-                      onChange={(e) => handleRoleChange(u._id, e.target.value)}
-                      disabled={u._id === user._id}
-                      className="px-3 py-2 bg-surface-container-low rounded-xl focus:ring-2 focus:ring-primary outline-none appearance-none text-sm font-bold capitalize disabled:opacity-50"
-                    >
-                      <option value="viewer">Viewer</option>
-                      <option value="analyst">Analyst</option>
-                      <option value="admin">Admin</option>
-                    </select>
+                    <span className="px-3 py-2 bg-surface-container-low rounded-xl text-sm font-bold capitalize inline-block">
+                      {u.role}
+                    </span>
                   </td>
                   <td className="px-8 py-6">
                     <span className={`px-3 py-1 rounded-[0.75rem] text-[11px] font-bold uppercase ${u.isActive ? 'bg-green-50 text-green-600' : 'bg-red-50 text-red-600'}`}>
@@ -102,6 +119,62 @@ const AdminPanel = () => {
           </table>
         </div>
       </div>
+
+      {selectedUser && (
+        <div className="fixed inset-0 z-[60] bg-black/40 backdrop-blur-[1px] flex items-center justify-center p-4">
+          <div className="w-full max-w-lg bg-surface-container-lowest rounded-2xl shadow-[0px_20px_60px_rgba(0,0,0,0.25)] border border-outline-variant/20">
+            <div className="p-6 border-b border-outline-variant/20">
+              <h2 className="text-xl font-extrabold font-manrope text-on-surface">Update User</h2>
+              <p className="text-sm text-secondary mt-1">{selectedUser.name} - {selectedUser.email}</p>
+            </div>
+
+            <div className="p-6 space-y-5">
+              <div>
+                <label className="block text-xs font-bold text-secondary uppercase tracking-widest mb-2">Role</label>
+                <select
+                  value={editRole}
+                  onChange={(e) => setEditRole(e.target.value)}
+                  className="w-full px-3 py-3 bg-surface-container-low rounded-xl focus:ring-2 focus:ring-primary outline-none text-sm font-bold capitalize"
+                >
+                  <option value="viewer">Viewer</option>
+                  <option value="analyst">Analyst</option>
+                  <option value="admin">Admin</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-secondary uppercase tracking-widest mb-2">Status</label>
+                <select
+                  value={String(editStatus)}
+                  onChange={(e) => setEditStatus(e.target.value === 'true')}
+                  className="w-full px-3 py-3 bg-surface-container-low rounded-xl focus:ring-2 focus:ring-primary outline-none text-sm font-bold"
+                >
+                  <option value="true">Active</option>
+                  <option value="false">Inactive</option>
+                </select>
+              </div>
+            </div>
+
+            <div className="p-6 pt-0 flex items-center justify-end gap-3">
+              <button
+                type="button"
+                onClick={closeEditCard}
+                className="px-4 py-2 rounded-xl text-sm font-bold text-secondary bg-surface-container-low hover:bg-surface-container"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={handleSaveChanges}
+                disabled={isSelf(selectedUser._id)}
+                className="px-4 py-2 rounded-xl text-sm font-bold text-on-primary bg-primary hover:bg-primary-container disabled:opacity-50"
+              >
+                Save Changes
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 };

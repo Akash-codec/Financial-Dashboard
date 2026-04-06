@@ -7,14 +7,14 @@ const getUsers = async (token) => {
   return response.data;
 };
 
-const updateUserRole = async (id, role, token) => {
-  const response = await axiosInstance.put(API_URL + id, { role });
+const updateUser = async (id, updates, token) => {
+  const response = await axiosInstance.put(API_URL + id, updates);
   return response.data;
 };
 
 const userService = {
   getUsers,
-  updateUserRole,
+  updateUser,
 };
 
 export default userService;
