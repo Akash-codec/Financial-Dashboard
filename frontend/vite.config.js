@@ -9,7 +9,7 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'http://localhost:8000',
+        target: 'https://financial-dashboard-3vwa.onrender.com',
         changeOrigin: true,
       }
     }
