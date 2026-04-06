@@ -1,5 +1,8 @@
 Hi there, I am Akash kumar I got selected forr both frontend and backend inter to do the projects as they were on the same topic i created this full stack app down bellow are the steps required to run this project and the api documentation.
 
+Frontend Live link:- https://financial-dashboard-olive-seven.vercel.app/
+Backend Live link:- https://financial-dashboard-3vwa.onrender.com
+
 # Financial Dashboard
 
 A full-stack Node.js (Express) and Vite React Application for managing personal finances.
